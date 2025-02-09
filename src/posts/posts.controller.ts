@@ -15,6 +15,7 @@ import { UpdatePostDto } from "./dto/update-post.dto";
 import { User } from "src/users/users.decorator";
 import { AuthGuard } from "src/auth/auth.guard";
 import { Subscription } from "src/users/subscription.decorator";
+import { Role } from "src/users/role.decorator";
 
 @Controller("posts")
 @UseGuards(AuthGuard)
@@ -23,11 +24,12 @@ export class PostsController {
 
   @Post()
   create(
+    @Role() role,
     @Subscription() supscription,
     @User() userId,
     @Body() createPostDto: CreatePostDto,
   ) {
-    return this.postsService.create(supscription, userId, createPostDto);
+    return this.postsService.create(role, supscription, userId, createPostDto);
   }
 
   @Get()
@@ -41,12 +43,17 @@ export class PostsController {
   }
 
   @Patch(":id")
-  update(@Param("id") id: string, @Body() updatePostDto: UpdatePostDto) {
-    return this.postsService.update(+id, updatePostDto);
+  update(
+    @Role() role,
+    @User() userId,
+    @Param("id") id: string,
+    @Body() updatePostDto: UpdatePostDto,
+  ) {
+    return this.postsService.update(role, userId, id, updatePostDto);
   }
 
   @Delete(":id")
-  remove(@Param("id") id: string) {
-    return this.postsService.remove(+id);
+  remove(@Role() role, @User() userId, @Param("id") id: string) {
+    return this.postsService.remove(role, userId, id);
   }
 }

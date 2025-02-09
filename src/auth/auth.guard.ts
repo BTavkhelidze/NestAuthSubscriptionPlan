@@ -24,6 +24,7 @@ export class AuthGuard implements CanActivate {
 
       request["userId"] = payload.userId;
       request.subscriptionPlan = payload.subscriptionPlan;
+      request.role = payload.role;
       return true;
     } catch {
       throw new BadRequestException("permission denied");

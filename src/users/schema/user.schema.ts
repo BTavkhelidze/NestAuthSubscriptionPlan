@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import mongoose from "mongoose";
+import { Role } from "src/enums/role.enum";
 import { Subscription } from "src/enums/subscription.enum";
 
 @Schema()
@@ -15,6 +16,9 @@ export class User {
 
   @Prop({ type: [mongoose.Schema.Types.ObjectId], ref: "posts" })
   posts: mongoose.Schema.Types.ObjectId;
+
+  @Prop({ type: String, enum: Role, default: Role.USER })
+  role: string;
 
   @Prop()
   password: string;

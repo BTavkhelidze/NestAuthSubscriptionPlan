@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from "@nestjs/common";
 import { CreatePostDto } from "./dto/create-post.dto";
 import { UpdatePostDto } from "./dto/update-post.dto";
 import { InjectModel } from "@nestjs/mongoose";
@@ -15,6 +19,7 @@ export class PostsService {
   ) {}
 
   async create(
+    role: string,
     supscription: string,
     userId: string,
     createPostDto: CreatePostDto,
@@ -56,11 +61,25 @@ export class PostsService {
     return post;
   }
 
-  update(id: number, updatePostDto: UpdatePostDto) {
+  async update(role, userId, id, updatePostDto: UpdatePostDto) {
+    const user = await this.userModel.findById(userId);
+    if (user?._id.toString() !== userId && role !== "admin") {
+      throw new UnauthorizedException("Invalid");
+    }
+    if (!user) throw new BadRequestException("user not found");
+
+    await this.postModel.findByIdAndUpdate(id, updatePostDto, {
+      new: true,
+    });
     return `This action updates a #${id} post`;
   }
 
-  remove(id: number) {
+  async remove(role, userId, id) {
+    const user = await this.userModel.findById(userId);
+    if (user?._id.toString() !== userId && role !== "admin") {
+      throw new UnauthorizedException("Invalid");
+    }
+    await this.userModel.findByIdAndDelete(user);
     return `This action removes a #${id} post`;
   }
 }

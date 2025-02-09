@@ -21,7 +21,6 @@ export class AuthService {
     console.log(existuser);
     if (existuser) throw new BadRequestException("user already exists");
     const hashedPasword = await bcrypt.hash(password, 10);
-    console.log(hashedPasword, "hashedPasword");
 
     await this.userModel.create({ email, fullName, password: hashedPasword });
     return "user registration successful";
@@ -36,6 +35,7 @@ export class AuthService {
     const payload = {
       userId: user._id,
       subscriptionPlan: user.subscriptionPlan,
+      role: user.role,
     };
     const token = await this.jwtService.sign(payload);
     return { token };
