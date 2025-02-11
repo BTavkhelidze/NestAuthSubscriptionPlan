@@ -4,7 +4,7 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from "@nestjs/common";
-import { CreateUserDto } from "./dto/create-user.dto";
+
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { InjectModel } from "@nestjs/mongoose";
 import { isValidObjectId, Model } from "mongoose";
@@ -26,7 +26,8 @@ export class UsersService {
   async update(role, req, id, updateUserDto: UpdateUserDto) {
     if (req.userId !== id && role !== "admin")
       throw new UnauthorizedException();
-    if (!isValidObjectId(id)) throw new BadRequestException("invalid object");
+    if (!isValidObjectId(id))
+      throw new BadRequestException("invalid object Id");
     const updateUser = await this.userModel.findByIdAndUpdate(
       id,
       updateUserDto,

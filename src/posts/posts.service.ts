@@ -50,11 +50,11 @@ export class PostsService {
 
   async findAll() {
     const post = await this.postModel.find();
-    console.log(post);
-    return this.postModel.find();
+
+    return post;
   }
 
-  findOne(id: number) {
+  findOne(id) {
     const post = this.postModel.findById(id);
     if (!post) throw new BadRequestException("post not found");
 
@@ -64,7 +64,7 @@ export class PostsService {
   async update(role, userId, id, updatePostDto: UpdatePostDto) {
     const user = await this.userModel.findById(userId);
     if (user?._id.toString() !== userId && role !== "admin") {
-      throw new UnauthorizedException("Invalid");
+      throw new UnauthorizedException("unauthorized");
     }
     if (!user) throw new BadRequestException("user not found");
 
@@ -77,7 +77,7 @@ export class PostsService {
   async remove(role, userId, id) {
     const user = await this.userModel.findById(userId);
     if (user?._id.toString() !== userId && role !== "admin") {
-      throw new UnauthorizedException("Invalid");
+      throw new UnauthorizedException("unauthorized");
     }
     await this.userModel.findByIdAndDelete(user);
     return `This action removes a #${id} post`;
