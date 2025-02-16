@@ -9,6 +9,9 @@ import {
   UseGuards,
   Req,
   Put,
+  UploadedFiles,
+  UseInterceptors,
+  UploadedFile,
 } from "@nestjs/common";
 import { UsersService } from "./users.service";
 
@@ -24,6 +27,7 @@ import {
   ApiOkResponse,
   ApiParam,
 } from "@nestjs/swagger";
+import { FileInterceptor, FilesInterceptor } from "@nestjs/platform-express";
 
 @Controller("users")
 @UseGuards(AuthGuard)
@@ -48,6 +52,23 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
+  // @Post("uploadImage")
+  // @UseInterceptors(FilesInterceptor("file"))
+  // uploadImage(@UploadedFiles() file: Express.Multer.File) {
+  //   const filePath = `images/${uuidv4()}`;
+
+  //   return this.usersService.uploadImage(filePath, file[0].buffer);
+  // }
+
+  @Post("/getImage")
+  getImage(@Body("fileId") fileId: string) {
+    return this.usersService.getImage(fileId);
+  }
+
+  @Put(":id/deleteImg")
+  deleteImage(@Param("id") id, @Body("fileId") fileId: string) {
+    return this.usersService.deleteImage(id, fileId);
+  }
   @ApiOkResponse({
     example: {
       _id: "67a9111be441c53bdbf92cca",
@@ -85,13 +106,18 @@ export class UsersController {
     example: "67a9111be441c53bdbf92cca",
   })
   @Patch(":id")
+  @UseInterceptors(FileInterceptor("file"))
   update(
+    @UploadedFile("file") file: Express.Multer.File,
+
     @Role() role,
     @Req() req,
     @Param("id") id: string,
+
     @Body() updateUserDto: UpdateUserDto,
   ) {
-    return this.usersService.update(role, req, id, updateUserDto);
+    console.log(updateUserDto.fullName);
+    return this.usersService.update(file.buffer, role, req, id, updateUserDto);
   }
 
   @ApiBadRequestResponse({

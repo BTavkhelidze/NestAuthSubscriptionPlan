@@ -5,9 +5,4 @@ export class UpdateUserDto {
     example: "Jhon lennon",
   })
   fullName: string;
-
-  @ApiProperty({
-    example: "Jhonlennon@gmail.com",
-  })
-  email: string;
 }

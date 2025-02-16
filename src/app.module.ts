@@ -6,6 +6,7 @@ import { UsersModule } from "./users/users.module";
 import { MongooseModule } from "@nestjs/mongoose";
 import { ConfigModule } from "@nestjs/config";
 import { PostsModule } from "./posts/posts.module";
+import { AwsS3Module } from './aws-s3/aws-s3.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { PostsModule } from "./posts/posts.module";
     AuthModule,
     UsersModule,
     PostsModule,
+    AwsS3Module,
   ],
   controllers: [AppController],
   providers: [AppService],

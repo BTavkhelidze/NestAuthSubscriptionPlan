@@ -18,11 +18,16 @@ export class AuthService {
 
   async signUp({ email, password, fullName }: SignUpDto) {
     const existuser = await this.userModel.findOne({ email });
-    console.log(existuser);
+
     if (existuser) throw new BadRequestException("user already exists");
     const hashedPasword = await bcrypt.hash(password, 10);
 
-    await this.userModel.create({ email, fullName, password: hashedPasword });
+    await this.userModel.create({
+      email,
+      fullName,
+      password: hashedPasword,
+      imageUrl: `images/blank-profile-picture.webp`,
+    });
     return "user registration successful";
   }
 
